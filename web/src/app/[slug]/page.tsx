@@ -28,7 +28,7 @@ export default function PostPage({params}: {params: Promise<{slug: string}>}) {
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 py-16">
       <Link href="/" className="text-sm underline">
-        All posts
+        Home
       </Link>
       <Suspense fallback={<p>Loading post…</p>}>
         <Post params={params} />

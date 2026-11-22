@@ -1,6 +1,7 @@
 import {defineQuery} from "next-sanity";
 import Link from "next/link";
 import {Suspense} from "react";
+import {ProjectList} from "@/components/project-list";
 import {client} from "@/sanity/client";
 
 const POSTS_QUERY = defineQuery(
@@ -34,13 +35,21 @@ async function PostList() {
   );
 }
 
-export default function PostsPage() {
+export default function HomePage() {
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 py-16">
-      <h1 className="text-3xl font-semibold tracking-tight">Posts</h1>
-      <Suspense fallback={<p>Loading posts…</p>}>
-        <PostList />
-      </Suspense>
+    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-12 px-6 py-16">
+      <section className="flex flex-col gap-6">
+        <h1 className="text-3xl font-semibold tracking-tight">Projects</h1>
+        <Suspense fallback={<p>Loading projects…</p>}>
+          <ProjectList />
+        </Suspense>
+      </section>
+      <section className="flex flex-col gap-6">
+        <h2 className="text-2xl font-semibold tracking-tight">Posts</h2>
+        <Suspense fallback={<p>Loading posts…</p>}>
+          <PostList />
+        </Suspense>
+      </section>
     </main>
   );
 }

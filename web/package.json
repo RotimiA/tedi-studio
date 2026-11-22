@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sync:projects": "node --env-file-if-exists=.env.local --experimental-strip-types src/lib/portfolio-sync/cli.ts"
   },
   "dependencies": {
     "@sanity/client": "8.15.0",
