@@ -15,6 +15,100 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
+export type Project = {
+  _id: string;
+  _type: "project";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  portfolioStatus?: "draft" | "readyForReview" | "published" | "unpublished";
+  summary?: string;
+  description?: string;
+  objective?: string;
+  role?: "Solo" | "Team Lead" | "Technology & Strategy Lead";
+  disciplines?: Array<string>;
+  tools?: Array<string>;
+  deliverablesText?: string;
+  outcomesText?: string;
+  projectStatus?:
+    "Backlog" | "Planning" | "In Progress" | "Paused" | "Done" | "Canceled";
+  startDate?: string;
+  endDate?: string;
+  projectUrl?: string;
+  mainImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  body?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?:
+          "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }
+  >;
+  notionPageId?: string;
+  sourceUpdatedAt?: string;
+  lastSyncedAt?: string;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
 export type Post = {
   _id: string;
   _type: "post";
@@ -41,12 +135,6 @@ export type Post = {
     _type: "block";
     _key: string;
   }>;
-};
-
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -85,22 +173,6 @@ export type SanityImageMetadata = {
   thumbHash?: string;
   hasAlpha?: boolean;
   isOpaque?: boolean;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
 };
 
 export type SanityFileAsset = {
@@ -163,14 +235,16 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
-  | Post
+  | SanityImageAssetReference
+  | Project
+  | SanityImageCrop
+  | SanityImageHotspot
   | Slug
+  | Post
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
   | SanityImageMetadata
-  | SanityImageHotspot
-  | SanityImageCrop
   | SanityFileAsset
   | SanityAssetSourceData
   | SanityImageAsset
@@ -211,11 +285,81 @@ export type POSTS_QUERY_RESULT = Array<{
   slug: Slug | null;
 }>;
 
+// Source: ../web/src/sanity/queries.ts
+// Variable: PROJECTS_QUERY
+// Query: *[_type == "project" && portfolioStatus == "published" && defined(slug.current)] | order(title asc) {    _id,    title,    "slug": slug.current,    summary,    disciplines  }
+export type PROJECTS_QUERY_RESULT = Array<{
+  _id: string;
+  title: string | null;
+  slug: string | null;
+  summary: string | null;
+  disciplines: Array<string> | null;
+}>;
+
+// Source: ../web/src/sanity/queries.ts
+// Variable: PROJECT_QUERY
+// Query: *[_type == "project" && portfolioStatus == "published" && slug.current == $slug][0]{    _id,    title,    summary,    description,    objective,    role,    disciplines,    tools,    deliverablesText,    outcomesText,    startDate,    endDate,    projectUrl,    mainImage,    body  }
+export type PROJECT_QUERY_RESULT = {
+  _id: string;
+  title: string | null;
+  summary: string | null;
+  description: string | null;
+  objective: string | null;
+  role: "Solo" | "Team Lead" | "Technology & Strategy Lead" | null;
+  disciplines: Array<string> | null;
+  tools: Array<string> | null;
+  deliverablesText: string | null;
+  outcomesText: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  projectUrl: string | null;
+  mainImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  body: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?:
+          "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }
+  > | null;
+} | null;
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
     '*[_type == "post" && slug.current == $slug][0]{ _id, title, body }': POST_QUERY_RESULT;
     '*[_type == "post" && defined(slug.current)] | order(_createdAt desc){ _id, title, slug }': POSTS_QUERY_RESULT;
+    '*[_type == "project" && portfolioStatus == "published" && defined(slug.current)] | order(title asc) {\n    _id,\n    title,\n    "slug": slug.current,\n    summary,\n    disciplines\n  }': PROJECTS_QUERY_RESULT;
+    '*[_type == "project" && portfolioStatus == "published" && slug.current == $slug][0]{\n    _id,\n    title,\n    summary,\n    description,\n    objective,\n    role,\n    disciplines,\n    tools,\n    deliverablesText,\n    outcomesText,\n    startDate,\n    endDate,\n    projectUrl,\n    mainImage,\n    body\n  }': PROJECT_QUERY_RESULT;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too
